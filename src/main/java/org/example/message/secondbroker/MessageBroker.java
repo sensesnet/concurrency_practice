@@ -1,15 +1,14 @@
 package org.example.message.secondbroker;
 
-import lombok.SneakyThrows;
 import lombok.var;
 
 import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;
 
+import static java.lang.System.out;
 import static java.lang.Thread.currentThread;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import static java.util.Optional.*;
 
 public final class MessageBroker {
     private final Queue<Message> messageQueue;
@@ -20,29 +19,51 @@ public final class MessageBroker {
         this.maxStoredMessages = maxStoredMessages;
     }
 
-    public synchronized void addMessage(final Message message) {
+    public synchronized void addMessage(final Message message,
+                                        MessageProducingTask producingTask) {
         try {
-            while (messageQueue.size() >= maxStoredMessages) {
+            while (isShouldProduce(producingTask)) {
                 super.wait();
             }
+
             messageQueue.add(message);
+            out.printf("Message '%s' was produced with thread '%s'!\n",
+                    message,
+                    producingTask.getName());
+            out.printf("Amount of messages before producing '%d'!\n",
+                    messageQueue.size() - 1);
             super.notify();
         } catch (InterruptedException e) {
             currentThread().interrupt();
         }
     }
 
-    public synchronized Optional<Message> removeMessage() {
+    public synchronized Optional<Message> consume(final MessageConsumingTask consumingTask) {
         try {
-            while (this.messageQueue.isEmpty()) {
+            while (!this.isShouldConsume(consumingTask)) {
                 super.wait();
             }
             final var message = messageQueue.poll();
+            out.printf("Message '%s' was consumed with thread '%s'!\n",
+                    message,
+                    consumingTask.getName());
+            out.printf("Amount of messages before consuming '%d'!\n",
+                    messageQueue.size() + 1);
             super.notify();
-            return of(message);
+            return ofNullable(message);
         } catch (InterruptedException e) {
             currentThread().interrupt();
             return empty();
         }
+    }
+
+    private boolean isShouldConsume(MessageConsumingTask consumerTask) {
+        return !messageQueue.isEmpty()
+                && messageQueue.size() >= consumerTask.getMinStoredMessages();
+    }
+
+    private boolean isShouldProduce(MessageProducingTask producingTask) {
+        return this.messageQueue.size() < this.maxStoredMessages
+                && this.messageQueue.size() <= producingTask.getMaxAmountOfMessagesToProduce();
     }
 }

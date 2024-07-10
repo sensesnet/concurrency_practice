@@ -1,18 +1,21 @@
 package org.example.message.secondbroker;
 
-import lombok.SneakyThrows;
 import lombok.var;
 
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.currentThread;
 
-public class Consumer implements Runnable {
+public class MessageConsumingTask implements Runnable {
 
     private final MessageBroker broker;
+    private final int minStoredMessages;
+    private final String name;
 
-    public Consumer(MessageBroker broker) {
+    public MessageConsumingTask(MessageBroker broker, int minStoredMessages, String name) {
         this.broker = broker;
+        this.minStoredMessages = minStoredMessages;
+        this.name = name;
     }
 
     @Override
@@ -20,14 +23,21 @@ public class Consumer implements Runnable {
         while (!currentThread().isInterrupted()) {
             try {
                 TimeUnit.SECONDS.sleep(1);
-                final var message = this.broker.removeMessage();
-                final Message consumedMessage = message.orElseThrow(
+                final var message = this.broker.consume(this);
+                message.orElseThrow(
                         MessageConsumingException::new
                 );
-                System.out.printf("Message '%s' was consumed!\n", consumedMessage.message);
             } catch (InterruptedException e) {
                 currentThread().interrupt();
             }
         }
+    }
+
+    public int getMinStoredMessages() {
+        return minStoredMessages;
+    }
+
+    public String getName() {
+        return name;
     }
 }
