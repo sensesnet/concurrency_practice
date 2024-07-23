@@ -1,6 +1,10 @@
 package org.example.reentrantreadwritelock;
 
+import java.util.OptionalLong;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
+
+import static java.lang.Thread.currentThread;
 
 public abstract class AbstractCounter {
     private long value;
@@ -9,11 +13,17 @@ public abstract class AbstractCounter {
 
     protected abstract Lock getWriteLock();
 
-    public long getValue() {
+    public OptionalLong getValue() {
         final Lock lock = this.getReadLock();
         lock.lock();
         try {
-            return value;
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                currentThread().interrupt();
+                return OptionalLong.empty();
+            }
+            return OptionalLong.of(value);
         } finally {
             lock.unlock();
         }

@@ -11,7 +11,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class Runner {
 
     // Amount of reading value: 49623626
+    // Amount of reading value: 51  (if OptionalLong in AbstractCounter)
+
     // Amount of reading value: 2358866
+    // Amount of reading value: 100  (if OptionalLong in AbstractCounter)
     public static void main(String[] args) throws InterruptedException {
 //        testCounter(CounterGuardedByLock::new);
         testCounter(CounterGuardedByReadWriteLock::new);
