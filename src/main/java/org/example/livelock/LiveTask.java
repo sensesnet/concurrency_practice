@@ -6,7 +6,7 @@ import java.util.concurrent.locks.Lock;
 import static java.lang.System.out;
 import static java.lang.Thread.currentThread;
 
-public class Task implements Runnable {
+public class LiveTask implements Runnable {
     private static final String MSG_TEMPLATE_TRY_ACQUIRE_LOCK = "Thread '%s' is trying to acquire lock '%s'.\n";
     private static final String MSG_TEMPLATE_SUCCESS_ACQUIRE_LOCK = "Thread '%s' acquired lock '%s'.\n";
     private static final String MSG_TEMPLATE_RELEASE_LOCK = "Thread '%s' released lock '%s'.\n";
@@ -16,7 +16,7 @@ public class Task implements Runnable {
     private final Lock firstLock;
     private final Lock secondLock;
 
-    public Task(Lock firstLock, Lock secondLock) {
+    public LiveTask(Lock firstLock, Lock secondLock) {
         this.firstLock = firstLock;
         this.secondLock = secondLock;
     }

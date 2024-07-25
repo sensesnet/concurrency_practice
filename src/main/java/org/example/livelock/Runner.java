@@ -9,8 +9,8 @@ public class Runner {
         final Lock firstGivenLock = new ReentrantLock();
         final Lock secondGivenLock = new ReentrantLock();
 
-        final Thread firstThread = new Thread(new Task(firstGivenLock, secondGivenLock));
-        final Thread secondThread = new Thread(new Task(secondGivenLock, firstGivenLock)); //deadlock
+        final Thread firstThread = new Thread(new LiveTask(firstGivenLock, secondGivenLock));
+        final Thread secondThread = new Thread(new LiveTask(secondGivenLock, firstGivenLock)); //livelock
 //        final Thread secondThread = new Thread(new Task(firstGivenLock, secondGivenLock)); //solution
 
         firstThread.start();
