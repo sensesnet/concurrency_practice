@@ -1,7 +1,6 @@
 package org.example.message.broker;
 
 import lombok.SneakyThrows;
-import lombok.var;
 
 import java.util.ArrayDeque;
 import java.util.Optional;
@@ -20,7 +19,7 @@ public final class MessageBroker {
 
     @SneakyThrows
     public synchronized void addMessage(final Message message) {
-        while(messageQueue.size()>=maxStoredMessages){
+        while (messageQueue.size() >= maxStoredMessages) {
             super.wait();
         }
         messageQueue.add(message);
@@ -33,10 +32,10 @@ public final class MessageBroker {
 //        while (this.messageQueue.isEmpty()){
 //
 //        }
-        while(this.messageQueue.isEmpty()){
+        while (this.messageQueue.isEmpty()) {
             super.wait();
         }
-        final var message =  messageQueue.poll();
+        final Message message = messageQueue.poll();
         super.notify();
         return of(message);
     }

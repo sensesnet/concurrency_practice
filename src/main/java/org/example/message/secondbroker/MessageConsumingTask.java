@@ -1,7 +1,6 @@
 package org.example.message.secondbroker;
 
-import lombok.var;
-
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.currentThread;
@@ -23,7 +22,7 @@ public class MessageConsumingTask implements Runnable {
         while (!currentThread().isInterrupted()) {
             try {
                 TimeUnit.SECONDS.sleep(1);
-                final var message = this.broker.consume(this);
+                final Optional<Message> message = this.broker.consume(this);
                 message.orElseThrow(
                         MessageConsumingException::new
                 );

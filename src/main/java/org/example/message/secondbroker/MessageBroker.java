@@ -1,7 +1,5 @@
 package org.example.message.secondbroker;
 
-import lombok.var;
-
 import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Queue;
@@ -43,7 +41,7 @@ public final class MessageBroker {
             while (!this.isShouldConsume(consumingTask)) {
                 super.wait();
             }
-            final var message = messageQueue.poll();
+            final Message message = messageQueue.poll();
             out.printf("Message '%s' was consumed with thread '%s'!\n",
                     message,
                     consumingTask.getName());

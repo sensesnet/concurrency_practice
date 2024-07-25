@@ -1,7 +1,5 @@
 package org.example.condition;
 
-import lombok.var;
-
 import java.util.stream.IntStream;
 
 import static java.lang.Thread.currentThread;
@@ -21,7 +19,7 @@ public class Runner {
                     }
                 });
 
-        var producingThread = new Thread(producingTask);
+        Thread producingThread = new Thread(producingTask);
 
         final Runnable consumingTask = () -> {
             try {
@@ -34,7 +32,7 @@ public class Runner {
             }
         };
         SECONDS.sleep(1);
-        var consumingThread = new Thread(consumingTask);
+        Thread consumingThread = new Thread(consumingTask);
 
         producingThread.start();
         consumingThread.start();
