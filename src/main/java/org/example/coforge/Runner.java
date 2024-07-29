@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 import static java.lang.System.out;
 
 public class Runner {
-    private static HashMap<String, Employer> dataSource = new HashMap<>();
+    private static final HashMap<String, Employer> EMPLOYER_HASH_MAP = new HashMap<>();
 
     private static final Employer EMPLOYEE_TEMPLATE = Employer.builder()
             .address("some_address")
@@ -36,7 +36,7 @@ public class Runner {
                 }
         );
 
-        out.println("dataSource size: " + dataSource.size());
+        out.println("dataSource size: " + EMPLOYER_HASH_MAP.size());
 
         var sortedEmployers = sortedEmployers(25, 35, "Jacob Gaba");
         out.println("Sorted list size: " + sortedEmployers.size());
@@ -47,12 +47,12 @@ public class Runner {
     private static List<Employer> sortedEmployers(int startAge,
                                                   int endAge,
                                                   String employeeName) {
-        var findAllByName = dataSource.keySet().stream()
+        var findAllByName = EMPLOYER_HASH_MAP.keySet().stream()
                 .filter(id -> id.contains(employeeName))
                 .collect(Collectors.toList());
 
         return findAllByName.stream()
-                .map(id -> dataSource.get(id))
+                .map(id -> EMPLOYER_HASH_MAP.get(id))
                 .collect(Collectors.toList()).stream()
                 .filter(employee -> startAge <= employee.getAge() && endAge >= employee.getAge())
                 .collect(Collectors.toList());
@@ -60,10 +60,10 @@ public class Runner {
 
     private static Employer create(Employer employee, String employeeName) {
         var id = UUID.randomUUID() + "_" + employeeName;
-        dataSource.put(id, employee);
+        EMPLOYER_HASH_MAP.put(id, employee);
         out.println("Employer id: " + id +
                 "\nEmployer attribute: [" + employee.toString() + "]");
-        return dataSource.get(id);
+        return EMPLOYER_HASH_MAP.get(id);
     }
 
     @Data
